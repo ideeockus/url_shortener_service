@@ -3,10 +3,12 @@
 // }
 
 mod shortener_service;
+mod web_ui;
 
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 use log::{debug, info, warn, error};
 use shortener_service::route_shortener_service;
+use web_ui::route_static_files;
 
 /*
 Generally I need endpoints:
@@ -40,6 +42,7 @@ async fn main() -> std::io::Result<()> {
     HttpServer::new(|| {
         App::new()
             .configure(route_shortener_service)
+            .configure(route_static_files)
             .service(hello)
             .service(echo)
             .route("/hey", web::get().to(manual_hello))
