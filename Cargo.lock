@@ -1263,6 +1263,7 @@ dependencies = [
  "dotenvy",
  "env_logger",
  "log",
+ "rand",
  "serde",
 ]
 

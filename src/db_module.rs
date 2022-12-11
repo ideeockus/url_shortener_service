@@ -13,6 +13,7 @@ pub fn establish_connection() -> PgConnection {
         .unwrap_or_else(|_| panic!("Error connecting to {}", database_url))
 }
 
+// TODO r2d2 for connection pool
 
 // /// creating new url short records
 // fn add_url_to_db(url: String) -> String {
@@ -31,10 +32,12 @@ pub fn establish_connection() -> PgConnection {
 //     }
 // }
 
-pub fn create_url_token(conn: &mut PgConnection, url: &str, url_token: &str) -> UrlToken {
-    let new_url_token = NewPost { url, url_token };
+pub fn create_url_token(new_url: &str, new_short_token: &str) -> UrlToken {
+    let conn: &mut PgConnection = &mut establish_connection();
 
-    diesel::insert_into(url_tokens::table)
+    let new_url_token = NewPost { url: new_url, short_token: new_short_token };
+
+    diesel::insert_into(url_tokens)
         .values(&new_url_token)
         .get_result(conn)
         .expect("Error saving new post")
@@ -55,6 +58,6 @@ fn get_url_records() {
     for record in results {
         println!("{}", record.url);
         println!("-----------\n");
-        println!("{}", record.url_token);
+        println!("{}", record.short_token);
     }
 }

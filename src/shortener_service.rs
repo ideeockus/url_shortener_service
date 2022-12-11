@@ -1,6 +1,7 @@
 use actix_web::{web, HttpResponse, Responder};
 use serde::Deserialize;
 use log::debug;
+use crate::{db_module, utils};
 
 #[derive(Deserialize)]
 struct ShortUrlRequest {
@@ -8,9 +9,15 @@ struct ShortUrlRequest {
 }
 
 async fn short_url(req: web::Query<ShortUrlRequest>) -> impl Responder {
-    // put to the database and return token
     debug!("short url req: {}", req.url_to_short);
-    HttpResponse::Ok().body(format!("Hey there! {}", req.url_to_short))
+
+    // TODO consider that diesel is blocking
+    let url_token = db_module::create_url_token(
+        &req.url_to_short,
+        &utils::gen_token()
+    ).short_token;
+
+    HttpResponse::Ok().body(format!("{}", url_token))
 }
 
 pub fn route_shortener_service(cfg: &mut web::ServiceConfig) {

@@ -1,0 +1,5 @@
+CREATE TABLE url_tokens (
+  id SERIAL PRIMARY KEY,
+  url VARCHAR NOT NULL,
+  short_token VARCHAR UNIQUE NOT NULL
+)
