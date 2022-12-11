@@ -4,6 +4,9 @@
 
 mod shortener_service;
 mod web_ui;
+mod models;
+mod schema;
+mod db_module;
 
 use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
 use log::{debug, info, warn, error};
