@@ -32,7 +32,7 @@ pub fn establish_connection() -> PgConnection {
 //     }
 // }
 
-pub fn create_url_token(new_url: &str, new_short_token: &str) -> UrlToken {
+pub fn create_url_token(new_url: &str, new_short_token: &str) -> Option<UrlToken> {
     let conn: &mut PgConnection = &mut establish_connection();
 
     let new_url_token = NewPost { url: new_url, short_token: new_short_token };
@@ -40,13 +40,23 @@ pub fn create_url_token(new_url: &str, new_short_token: &str) -> UrlToken {
     diesel::insert_into(url_tokens)
         .values(&new_url_token)
         .get_result(conn)
-        .expect("Error saving new post")
+        .ok()
+}
+
+pub fn get_urltoken_by_token(short_token_param: &str) -> Option<UrlToken> {
+    let conn: &mut PgConnection = &mut establish_connection();
+
+    url_tokens
+        .filter(short_token.eq(short_token_param))
+        .first::<UrlToken>(conn)
+        .optional()
+        .expect("Error loading url")
+        // .first()
 }
 
 
 
-/// some func
-fn get_url_records() {
+fn print_url_records() {
     let connection = &mut establish_connection();
     let results: Vec<UrlToken> = url_tokens
         // .filter(published.eq(true))
