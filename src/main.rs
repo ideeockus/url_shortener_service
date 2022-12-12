@@ -1,7 +1,3 @@
-// fn main() {
-//     println!("Hello, world!");
-// }
-
 mod shortener_service;
 mod web_ui;
 mod models;
@@ -14,34 +10,15 @@ use log::{debug, info, warn, error};
 use shortener_service::route_shortener_service;
 use web_ui::route_static_files;
 
-/*
-Generally I need endpoints:
-- web ui (static)
-- endpoint for <short_url>
-- endpoint for <shortened_url> -> redirect
-
-then prepare docker compose: backend + postgresql and then deploy it to server
-*/
-
-
 #[get("/")]
 async fn hello() -> impl Responder {
     HttpResponse::Ok().body("Hello world!")
 }
 
-#[post("/echo")]
-async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
-}
-
-async fn manual_hello() -> impl Responder {
-    HttpResponse::Ok().body("Hey there!")
-}
-
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init();
-    debug!("Test debug logging");
+    debug!("Service started");
 
     HttpServer::new(|| {
         App::new()
@@ -52,7 +29,7 @@ async fn main() -> std::io::Result<()> {
             .route("/hey", web::get().to(manual_hello))
     })
         // .workers(4)
-        .bind(("127.0.0.1", 8080))?
+        .bind(("0.0.0.0", 80))?
         .run()
         .await
 }

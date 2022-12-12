@@ -9,7 +9,6 @@ use log::debug;
 
 async fn index(req: HttpRequest) -> Result<NamedFile> {
     debug!("current dir {:?}", env::current_dir());
-    // let path: PathBuf = req.match_info().query("index.html").parse().unwrap();
     let path: PathBuf = env::current_dir().unwrap().join("index.html");
     debug!("index file path {:?}", path);
     Ok(NamedFile::open(path)?)

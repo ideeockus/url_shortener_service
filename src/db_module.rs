@@ -15,23 +15,6 @@ pub fn establish_connection() -> PgConnection {
 
 // TODO r2d2 for connection pool
 
-// /// creating new url short records
-// fn add_url_to_db(url: String) -> String {
-//     let connection = &mut establish_connection();
-//     let results = posts
-//         .filter(published.eq(true))
-//         .limit(5)
-//         .load::<Post>(connection)
-//         .expect("Error loading posts");
-//
-//     println!("Displaying {} posts", results.len());
-//     for post in results {
-//         println!("{}", post.title);
-//         println!("-----------\n");
-//         println!("{}", post.body);
-//     }
-// }
-
 pub fn create_url_token(new_url: &str, new_short_token: &str) -> Option<UrlToken> {
     let conn: &mut PgConnection = &mut establish_connection();
 
@@ -51,7 +34,6 @@ pub fn get_urltoken_by_token(short_token_param: &str) -> Option<UrlToken> {
         .first::<UrlToken>(conn)
         .optional()
         .expect("Error loading url")
-        // .first()
 }
 
 
