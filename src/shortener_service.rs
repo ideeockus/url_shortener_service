@@ -1,9 +1,7 @@
 use actix_web::{web, HttpResponse, Responder};
-use actix_web::web::{route, service};
 use serde::Deserialize;
 use log::debug;
 use crate::{db_module, utils};
-use crate::models::UrlToken;
 
 #[derive(Deserialize)]
 struct ShortUrlRequest {
@@ -61,6 +59,7 @@ async fn autoredirect_to_url(req: web::Path<GetUrlByTokenRequest>) -> impl Respo
             HttpResponse::ServiceUnavailable().body("")
         }
         Some(ut) => {
+            // there can be recursive redirection if ut.url is another token
             HttpResponse::Found().append_header(("Location", ut.url)).finish()
         }
     }

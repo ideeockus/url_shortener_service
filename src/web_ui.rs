@@ -1,10 +1,8 @@
 use std::env;
-use actix_web::{web, App, HttpResponse, HttpServer, Responder};
+use actix_web::web;
 use actix_files::{NamedFile, Files};
 use actix_web::{HttpRequest, Result};
 use std::path::PathBuf;
-use actix_web::dev::Path;
-use serde::Deserialize;
 use log::debug;
 
 async fn index(req: HttpRequest) -> Result<NamedFile> {

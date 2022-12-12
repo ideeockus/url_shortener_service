@@ -37,7 +37,7 @@ pub fn get_urltoken_by_token(short_token_param: &str) -> Option<UrlToken> {
 }
 
 
-
+#[warn(dead_code)]
 fn print_url_records() {
     let connection = &mut establish_connection();
     let results: Vec<UrlToken> = url_tokens

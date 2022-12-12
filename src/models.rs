@@ -1,4 +1,3 @@
-use diesel::dsl::Nullable;
 use diesel::prelude::*;
 use crate::schema::url_tokens;
 

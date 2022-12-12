@@ -5,8 +5,8 @@ mod schema;
 mod db_module;
 mod utils;
 
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
-use log::{debug, info, warn, error};
+use actix_web::{get, App, HttpResponse, HttpServer, Responder};
+use log::{info};
 use shortener_service::route_shortener_service;
 use web_ui::route_static_files;
 
@@ -18,18 +18,16 @@ async fn hello() -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init();
-    debug!("Service started");
+    info!("Service started");
 
     HttpServer::new(|| {
         App::new()
             .configure(route_shortener_service)
             .configure(route_static_files)
             .service(hello)
-            .service(echo)
-            .route("/hey", web::get().to(manual_hello))
     })
         // .workers(4)
-        .bind(("0.0.0.0", 80))?
+        .bind(("0.0.0.0", 8080))?
         .run()
         .await
 }
