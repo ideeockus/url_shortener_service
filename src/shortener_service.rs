@@ -1,4 +1,5 @@
 use actix_web::{web, HttpResponse, Responder};
+use actix_web::web::{route, service};
 use serde::Deserialize;
 use log::debug;
 use crate::{db_module, utils};
@@ -47,21 +48,34 @@ async fn get_url_by_token(req: web::Query<GetUrlByTokenRequest>) -> impl Respond
             HttpResponse::Ok().body(format!("{}", ut.url))
         }
     }
+}
 
+async fn autoredirect_to_url(req: web::Path<GetUrlByTokenRequest>) -> impl Responder {
+    debug!("attempt to redirect by token: {}", req.short_token);
 
+    // TODO consider that diesel is blocking
+    let url_token = db_module::get_urltoken_by_token(&req.short_token);
+
+    match url_token {
+        None => {
+            HttpResponse::ServiceUnavailable().body("")
+        }
+        Some(ut) => {
+            HttpResponse::Found().append_header(("Location", ut.url)).finish()
+        }
+    }
 }
 
 // REMINDER it possible to use actix_web_lab::Redirect::new("/old", "/new") for redirect
 
 pub fn route_shortener_service(cfg: &mut web::ServiceConfig) {
-    cfg.service(
+    cfg
+        .service(
         web::scope("/api")
-            // .route("/short_url", web::post().to(|| async { HttpResponse::Ok().body("test") }))
             .route("/short_url", web::post().to(short_url))
             .route("/get_url", web::get().to(get_url_by_token))
-
-            // .route("/", web::head().to(HttpResponse::MethodNotAllowed)),
-    );
+        )
+        .route("/{short_token}", web::get().to(autoredirect_to_url));
 }
 
 
