@@ -9,6 +9,7 @@ use actix_web::{get, App, HttpResponse, HttpServer, Responder};
 use log::{info};
 use shortener_service::route_shortener_service;
 use web_ui::route_static_files;
+use crate::db_module as db;
 
 #[get("/")]
 async fn hello() -> impl Responder {
@@ -18,6 +19,8 @@ async fn hello() -> impl Responder {
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     env_logger::init();
+    info!("Starting migrations");
+    db::run_migration();
     info!("Service started");
 
     HttpServer::new(|| {

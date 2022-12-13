@@ -4,6 +4,16 @@ use dotenvy::dotenv;
 use std::env;
 use crate::models::*;
 use crate::schema::url_tokens::dsl::*;
+use diesel_migrations::{embed_migrations, EmbeddedMigrations, MigrationHarness};
+
+
+// diesel migrations
+pub const MIGRATIONS: EmbeddedMigrations = embed_migrations!();
+
+pub fn run_migration() {
+    let conn: &mut PgConnection = &mut establish_connection();
+    conn.run_pending_migrations(MIGRATIONS).expect("Running migrations failed!");
+}
 
 pub fn establish_connection() -> PgConnection {
     dotenv().ok();
